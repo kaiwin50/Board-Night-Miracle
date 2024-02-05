@@ -5,6 +5,7 @@
   align-items: center;
   padding: 6rem;
   min-height: 100vh;
+  background-color: #f39e00;
 }
 
 .description {
@@ -226,4 +227,14 @@
   to {
     transform: rotate(0deg);
   }
+}
+
+.loginButton{
+  position: absolute;
+  bottom: 40%;
+}
+
+.createProfile{
+  position: absolute;
+  top: 20%;
 }
