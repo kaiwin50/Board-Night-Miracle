@@ -1,7 +1,7 @@
-import { useEffect, useState } from "react"
+import { createContext, useContext, useEffect, useState } from "react"
 import db, { auth } from "./firebase"
 import { GoogleAuthProvider, signInWithPopup, signOut as FirebaseSignOut, onAuthStateChanged } from "firebase/auth"
-import { doc, getDoc } from "firebase/firestore";
+import { doc, getDoc, setDoc } from "firebase/firestore";
 import { useRouter } from "next/router";
 
 const provider = new GoogleAuthProvider();
@@ -15,18 +15,22 @@ export const signOut = () => FirebaseSignOut(auth);
 
 export const currentUser = (getter, setter) => {
     const router = useRouter();
-
+    console.log("cur : ")
     useEffect(() => {
         return onAuthStateChanged(auth, async (user) => {
-            const ref = await getDoc(doc(db, "user", user.uid));
-            console.log("currentUser: ", ref.data())
-            if (ref.data()) {
-                console.log("refData: ", ref.data())
-
-                setter(ref.data())
+            console.log("user : ", user)
+            if (user) {
+                const ref = await getDoc(doc(db, "user", user.uid));
+                if (ref.data()) {
+                    setter({ ...ref.data(), uid: user.uid })
+                }
+                else {
+                    setter({ uid: user.uid })
+                    router.push("/createProfile")
+                }
             }
             else {
-                router.push("/createProfile")
+                router.push("/")
             }
         });
     }, []);
@@ -34,7 +38,20 @@ export const currentUser = (getter, setter) => {
     return getter;
 }
 
-export const setUserDisplayname = (name) => {
-    const [user, setUser] = useState({})
-    
+export const AuthContext = createContext();
+
+export const AuthProvider = ({ children }) => {
+    const [User, setUser] = useState();
+    currentUser(User, setUser);
+
+    return (
+        <AuthContext.Provider value={{ User, setUser }}>{children}</AuthContext.Provider>
+    )
 }
+
+export const createProfile = (uid, displayName) => {
+    setDoc(doc(db, "user", uid), {
+        displayName: displayName
+    });
+    return displayName;
+} 

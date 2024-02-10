@@ -10,19 +10,21 @@ export default function signInPage() {
   const router = useRouter()
   const [user, setUser] = useState({})
 
-  useEffect(()=>{
+  useEffect(() => {
     console.log(auth)
   }, [auth])
   return (
-      <main className={styles.main}>
-        <div className={styles.loginButton}>
-          <Button size={"lg"} variant={"solid"} colorScheme={"gray"} leftIcon={<LogoGoogleIcon />} onClick={() => {
-            signIn()
+    <main className={styles.main}>
+      <div className={styles.loginButton}>
+        <Button size={"lg"} variant={"solid"} colorScheme={"gray"} leftIcon={<LogoGoogleIcon />} onClick={() => {
+          signIn().then((user) => {
             router.push("/home")
-          }}>
-            Fetch User Data
-          </Button>
-        </div>
-      </main>
+            console.log(user)
+          })
+        }}>
+          Fetch User Data
+        </Button>
+      </div>
+    </main>
   );
 }

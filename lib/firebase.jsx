@@ -23,7 +23,7 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app)
 
 // authena by google popup.
-export const auth = getAuth()
+export const auth = getAuth(app)
 
 
 export default db
