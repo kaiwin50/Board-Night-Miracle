@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { Button } from '@chakra-ui/react'
 import { LogoGoogleIcon } from 'chakra-ui-ionicons';
 import { signIn } from "@/lib/auth";
-import { auth } from "@/lib/firebase";
+import { auth } from "@/config/firebase";
 
 export default function signInPage() {
   const router = useRouter()

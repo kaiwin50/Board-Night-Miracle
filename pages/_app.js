@@ -1,15 +1,12 @@
-import { AuthProvider } from "@/lib/auth";
+import { Provider } from "@/config/Provider";
 import "@/styles/globals.css";
-import { ChakraProvider } from "@chakra-ui/react";
 
 export default function App({ Component, pageProps }) {
   return (
     <>
-      <AuthProvider>
-        <ChakraProvider>
-          <Component {...pageProps} />;
-        </ChakraProvider>
-      </AuthProvider>
+      <Provider>
+        <Component {...pageProps} />;
+      </Provider>
     </>
   )
 }

@@ -1,15 +1,16 @@
 import { Container, Box, Input, AbsoluteCenter, Button, Center } from '@chakra-ui/react'
 import styles from "@/styles/Home.module.css";
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
-import db, { auth } from '@/lib/firebase';
+import db, { auth } from '@/config/firebase';
 import { collection, doc, getDoc, onSnapshot, query, where } from 'firebase/firestore';
 import { useContext, useEffect, useState } from 'react';
-import { AuthContext, createProfile, currentUser, currentUserID } from '@/lib/auth';
 import { useRouter } from 'next/navigation';
+import { createProfile } from '@/lib/player';
+import { AuthContext } from '@/lib/auth';
 
 
 export default () => {
-    const {User, setUser} = useContext(AuthContext)
+    const {User} = useContext(AuthContext)
     const router = useRouter()
     const [displayName, setDisplayName] = useState("");
     return (
@@ -23,12 +24,8 @@ export default () => {
                             }}></Input>
                             <Center p={5}>
                                 <Button size={"lg"} variant={"solid"} colorScheme={"gray"} onClick={async () => {
-                                    onSnapshot(doc(db, "user", User.uid), (snap)=>{
-                                        setUser({...snap.data(), uid: snap.id})
-                                        router.push("/home")
-                                    })
-                                    createProfile(User.uid, displayName)
-                                    
+                                    createProfile(User.uid, displayName, User.photoURL)
+                                    router.push("/home")
                                 }}>
                                     Confirm
                                 </Button>

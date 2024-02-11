@@ -1,19 +1,14 @@
-import { cloneElement, useContext, useEffect, useRef, useState } from "react";
-import { Container, Box, Input, AbsoluteCenter, Button, Center, Wrap, WrapItem, Grid, GridItem } from '@chakra-ui/react'
-import {
-    FormControl,
-    FormLabel,
-    FormErrorMessage,
-    FormHelperText,
-} from '@chakra-ui/react'
+import { useContext, useEffect, useRef, useState } from "react";
+import { Container, Box, Input, Button, Grid, GridItem } from '@chakra-ui/react'
+import { FormControl } from '@chakra-ui/react'
 import { useRouter } from "next/navigation";
 import { addDoc, collection, onSnapshot, serverTimestamp, orderBy, query } from "firebase/firestore";
-import db from "@/lib/firebase";
-import { AuthContext } from "@/lib/auth";
+import db from "@/config/firebase";
+import { PlayerContext } from "../player";
 
 export default () => {
     const router = useRouter();
-    const { User } = useContext(AuthContext);
+    const { Player } = useContext(PlayerContext);
     const [message, setMsg] = useState("");
     const [chatLog, setChatLog] = useState([]);
     const dummy = useRef(null);
@@ -24,8 +19,8 @@ export default () => {
         if (message) {
             addDoc(collection(db, "chat"), {
                 msg: message,
-                sender: User.displayName,
-                senderUid: User.uid,
+                sender: Player.displayName,
+                senderUid: Player.uid,
                 timestamp: serverTimestamp()
             });
         }
@@ -33,7 +28,6 @@ export default () => {
         msgInput.current.value = ""
         console.log()
     }
-
     
     useEffect(() => {
             dummy.current?.scrollIntoView({ behavior: 'smooth', block: 'end' });
@@ -49,13 +43,13 @@ export default () => {
             })
     }, [router.isReady])
     return (
-        <Container position={"relative"} bottom={"0%"} left={"0%"} margin={0} p={0} h={"15rem"} w={"30rem"}>
+        <Container position={"relative"} bottom={"0%"} left={"0%"} margin={0} p={0} h={"15rem"} w={"28rem"}>
             <Box borderRadius='md' position={"absolute"} bg='#F6AD55' color='white' w={"100%"} h={"100%"}>
                 <Box borderRadius='md' position={"relative"} overflowY={"auto"} display={"flex"} flexDirection={"column"} bg='#f67855' color='white' w={"100%"} h={"85%"}>
                     {chatLog?.map(({ msg, sender, senderUid, timestamp }, index) => {
                         const time = timestamp?.toDate()?.toLocaleTimeString('en-US')
                         return (
-                            <Box key={sender + index} alignSelf={senderUid === User?.uid ? "flex-end" : "none"} position={"relative"}>
+                            <Box key={sender + index} alignSelf={senderUid === Player?.uid ? "flex-end" : "none"} position={"relative"}>
                                 <b>{sender} : </b>
                                 <Box borderRadius='20rem' w={"fit-content"} px={"1.5rem"} py={".5rem"} bg='#ffdcc4' color={"#000"} >
                                     {msg}<br />
