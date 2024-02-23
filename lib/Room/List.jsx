@@ -7,10 +7,7 @@ import { Box, AbsoluteCenter, Button } from '@chakra-ui/react'
 import { useDisclosure } from '@chakra-ui/react'
 import { PlayerContext } from "@/lib/player";
 import { JoinRoom } from "./Gateway";
-
-export const getRoomProfile = async (uid) => {
-    return await (getDoc(doc(db, "user", uid)))
-}
+import { EnterIcon } from 'chakra-ui-ionicons';
 
 export const RoomList = () => {
     const [list, setList] = useState([]);
@@ -42,7 +39,7 @@ export const RoomList = () => {
                     {
                         list?.map(({ rid, host, createAt }) => {
                             return (<Button bg={"#ffe48b"} w={"100%"} borderRadius={"xl"}
-                             margin={".2rem"} p={"1rem"} key={rid} onClick={ () => JoinRoom(rid, Player)}> {rid} | {host} | {createAt?.toDate()?.toLocaleTimeString("en-US")} </Button>)
+                             margin={".2rem"} p={"1rem"} key={rid} onClick={ () => JoinRoom(rid, Player)}> {rid} | {host} | {createAt?.toDate()?.toLocaleTimeString("en-US")} | <EnterIcon w={6} h={6} /> </Button>)
                         })
                     }
                 </Box>

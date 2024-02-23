@@ -5,6 +5,7 @@ export const CreateRoom = async (player) => {
     const room = await addDoc(collection(db, "room"), {
         host: player.displayName,
         player: [],
+        profile: [],
         createAt: serverTimestamp()
     });
     JoinRoom(room.id, player);
@@ -16,13 +17,21 @@ export const JoinRoom = async (rid, player) => {
         inRoom: rid,
         status: "in Room"
     });
+    const AllProfile = roomData.data().profile;
     updateDoc(doc(db, "room", rid), {
-        player: [...roomData?.data().player, player.uid]
+        player: [...roomData?.data().player, player.uid],
+        profile: {
+            ...AllProfile,
+            [player.uid]: {
+                displayName: player.displayName,
+                img: player.img
+            }
+        }
     });
 }
 
 export const LeaveRoom = async (rid, player) => {
-    const roomData = await getDoc(doc(db, "room", rid));
+    const roomData = (await getDoc(doc(db, "room", rid)));
     const playerList = roomData?.data().player;
     const playerIndex = playerList?.indexOf(player.uid);
     if (playerIndex > -1) {
@@ -31,10 +40,10 @@ export const LeaveRoom = async (rid, player) => {
             deleteDoc(doc(db, "room", rid));
         }
         else {
-            if (roomData.host == player.displayName) {
+            if (roomData.data().host == player.displayName) {
                 updateDoc(doc(db, "room", rid), {
                     player: playerList,
-                    host: playerList[0]
+                    host: roomData.data().profile[playerList[0]].displayName
                 });
             }
             else {
